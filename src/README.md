@@ -1,11 +1,10 @@
 # TrickTrack - Intelligente Skateboard Trick-Analyse 🛹
 
-## 🌟 Für Skateboarder, Profis, Coaches & Trainer
+## Für Skateboarder, Profis, Coaches & Trainer
 
 TrickTrack ist ein innovatives System zur Analyse und Verbesserung von Skateboard-Tricks. Mithilfe eines tragbaren Motion-Devices und intelligenter Sensordatenverarbeitung bietet es sofortiges Feedback und detaillierte Analysen.
-__________________________________________________________________________________________________________________
 
-## ✨ Agenda
+## Agenda
 
 1. Projektthema
 
@@ -14,9 +13,8 @@ ________________________________________________________________________________
 3. Approach
 
 4. Konzepte
-__________________________________________________________________________________________________________________
 
-## 💡 Projektthema: TrickTrack
+## Projektthema: TrickTrack
 
 - Intelligente Skateboard-Trick-Analyse mittels Sensortechnologie
 
@@ -34,11 +32,11 @@ ________________________________________________________________________________
 - System erkennt Tricks automatisch
 
 - Hilft beim Erlernen und Perfektionieren von Tricks
-__________________________________________________________________________________________________________________
 
-## 🔮 Scope: Projektscope
 
-#### 🔄 Muss-Have Features
+## Scope: Projektscope
+
+#### Muss-Have Features
 
 - Erkennung von Skateboard-Tricks mit IMU-Sensoren (Beschleunigung & Gyroskop)
 
@@ -49,7 +47,7 @@ ________________________________________________________________________________
 - Bluetooth-Übertragung der Daten an ein Smartphone oder PC
 
 
-#### 🛠 Nice to Have Features
+#### Nice to Have Features
 
 - Echtzeit-Datenvisualisierung in einer App oder Web-Oberfläche
 
@@ -58,7 +56,7 @@ ________________________________________________________________________________
 - Community-Feature: Teilen & Vergleichen von Tricks mit anderen Skatern
 
 
-#### ❌ Won't Have Features
+#### Won't Have Features
 
 - Keine Videoanalyse oder Kamera-basierte Trick-Erkennung
 
@@ -69,11 +67,10 @@ ________________________________________________________________________________
 - Keine 3D-Visualisierung des Skateboards (nur Sensordaten)
 
 - Kein Echtzeit-Upload in eine Cloud-Datenbank (nur lokale Speicherung & Übertragung)
-__________________________________________________________________________________________________________________
 
-## 💧 Approach: Technischer Ansatz
+## Approach: Technischer Ansatz
 
-#### 🛠 Sensorbasierte Datenerfassung
+#### Sensorbasierte Datenerfassung
 
 - Nutzung des IMU-Sensors (Beschleunigung & Gyroskop) auf dem Arduino Nano 33 BLE Sense
 
@@ -81,7 +78,7 @@ ________________________________________________________________________________
 
 - Speicherung & Übertragung der Sensordaten via Bluetooth Low Energy (BLE) an ein Smartphone oder PC
 
-#### 🌀 Trick-Analyse & Erkennung
+#### Trick-Analyse & Erkennung
 
 - Vergleich der Sensordaten mit bekannten Bewegungsmustern
 
@@ -89,22 +86,22 @@ ________________________________________________________________________________
 
 - Training eines Machine Learning Modells zur besseren Erkennung
 
-#### 🎮 Feedback & Benutzerinteraktion
+#### Feedback & Benutzerinteraktion
 
 - Anzeige des Tricks auf einer App oder einem Bildschirm
 
 - Speicherung der Daten zur langfristigen Analyse
 
-#### ✅ Validierung & Tests
+#### Validierung & Tests
 
 - Tests mit verschiedenen Skatern und Tricks
 
 - Verbesserung der Algorithmen durch kontinuierliches Lernen
-__________________________________________________________________________________________________________________
 
-## 🤖 Konzepte: Hardware & Software
 
-#### 🛠 1. Hardware-Komponenten
+## Konzepte: Hardware & Software
+
+#### 1. Hardware-Komponenten
 
 Unsere Lösung verwendet leicht zugängliche Hardware:
 
@@ -120,7 +117,7 @@ Unsere Lösung verwendet leicht zugängliche Hardware:
 
 - USB-Kabel zur Verbindung und Datenübertragung
 
-#### 💻 2. Software & KI-Integration
+#### 2. Software & KI-Integration
 
 - Wir setzen auf moderne Software-Tools:
 
@@ -129,18 +126,17 @@ Unsere Lösung verwendet leicht zugängliche Hardware:
 - GitHub & Git zur Versionskontrolle
 
 - Edge Impulse zur KI-gestützten Datenauswertung
-__________________________________________________________________________________________________________________
 
-## 🌟 Fazit & Nächste Schritte
+
+## Fazit & Nächste Schritte
 
 - Verbesserung der Trick-Erkennung durch Machine Learning
 
 - Entwicklung einer benutzerfreundlichen App
 
 - Community-Features zur Vernetzung von Skatern
-__________________________________________________________________________________________________________________
 
-## 👤 Autoren
+## Autoren
 
 **Erstellt von: [Henrike Krista Pflüger: s0590917​, Dilek Ogur: s0578816, Susann Gesch: s0578525/ Gruppe 7]** 
 
