@@ -36,7 +36,7 @@ TrickTrack ist ein innovatives System zur Analyse und Verbesserung von Skateboar
 
 ## Scope: Projektscope
 
-#### Muss-Have Features
+#### Must-Have Features
 
 - Erkennung von Skateboard-Tricks mit IMU-Sensoren (Beschleunigung & Gyroskop)
 
