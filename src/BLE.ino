@@ -1,99 +1,101 @@
+#include <Arduino.h>
 #include <ArduinoBLE.h>
-#include <Arduino_LSM9DS1.h>  // Bibliothek für den IMU-Sensor
-    
-// BLE-Service für den IMU-Sensor (eigene UUID)
-    BLEService imuService("19B10000-E8F2-537E-4F6C-D104768A1214");
-    
-    // BLE-Charakteristiken für Beschleunigung (X, Y, Z)
-    // Wir verwenden BLEStringCharacteristic, um die Float-Werte als Strings zu senden
-    BLEStringCharacteristic accXChar("19B10001-E8F2-537E-4F6C-D104768A1214", BLERead | BLENotify, 10);  // max. 10 Zeichen
-    BLEStringCharacteristic accYChar("19B10002-E8F2-537E-4F6C-D104768A1214", BLERead | BLENotify, 10);  // max. 10 Zeichen
-    BLEStringCharacteristic accZChar("19B10003-E8F2-537E-4F6C-D104768A1214", BLERead | BLENotify, 10);  // max. 10 Zeichen
-    
-    // BLE-Charakteristiken für Gyroskop (X, Y, Z)
-    BLEStringCharacteristic gyroXChar("19B10004-E8F2-537E-4F6C-D104768A1214", BLERead | BLENotify, 10);  // max. 10 Zeichen
-    BLEStringCharacteristic gyroYChar("19B10005-E8F2-537E-4F6C-D104768A1214", BLERead | BLENotify, 10);  // max. 10 Zeichen
-    BLEStringCharacteristic gyroZChar("19B10006-E8F2-537E-4F6C-D104768A1214", BLERead | BLENotify, 10);  // max. 10 Zeichen
-    
-    void setup() {
-        Serial.begin(115200);  // Serielle Kommunikation starten (für Debugging)
-        delay(500);  // Kurze Verzögerung, um sicherzustellen, dass alles hochfährt
-    
-        // BLE starten
-        if (!BLE.begin()) {
-            Serial.println("❌ BLE konnte nicht gestartet werden!");
-            while (1);
-        }
-    
-        // IMU-Sensor starten
-        if (!IMU.begin()) {
-            Serial.println("❌ IMU Sensor konnte nicht gestartet werden!");
-            while (1);
-        }
-    
-        // BLE-Gerätenamen setzen
-        BLE.setLocalName("Nano33BLE_IMU");
-    
-        // Werbefunkmodus aktivieren
-        BLE.setAdvertisedService(imuService);
-    
-        // Charakteristiken zum BLE-Service hinzufügen
-        imuService.addCharacteristic(accXChar);
-        imuService.addCharacteristic(accYChar);
-        imuService.addCharacteristic(accZChar);
-        imuService.addCharacteristic(gyroXChar);
-        imuService.addCharacteristic(gyroYChar);
-        imuService.addCharacteristic(gyroZChar);
-    
-        // Service zum BLE hinzufügen
-        BLE.addService(imuService);
-    
-        // BLE-Werbung starten (damit das Gerät von anderen Geräten gefunden werden kann)
-        BLE.advertise();
-    
-        Serial.println("✅ BLE IMU Sensor bereit...");
+#include <TrickTrack-HTW-BigDataAnalytics_inferencing.h> // Edge Impulse Modell
+#include <Arduino_LSM9DS1.h> // IMU-Bibliothek für Nano 33 BLE Sense
+
+// BLE Setup
+BLEService aiService("180C");  
+BLECharacteristic resultCharacteristic("2A56", BLERead | BLENotify, 32);  
+
+void setup() {
+    Serial.begin(115200);
+    delay(100); // Kurze Wartezeit für Initialisierung
+    bool serialActive = Serial; // Prüft, ob Serial aktiv ist
+
+    if (serialActive) Serial.println("🔄 Starte...");
+
+    // 🔹 IMU starten
+    if (!IMU.begin()) {
+        if (serialActive) Serial.println("❌ IMU konnte nicht gestartet werden!");
+        while (1);
     }
-    
-    void loop() {
-        // Werbe kontinuierlich in einer Schleife
-        BLE.advertise();
-    
-        // Wenn ein zentrales Gerät verbunden ist, beginne mit der Datenübertragung
-        BLEDevice central = BLE.central();
-    
-        if (central) {
-            Serial.print("✅ Verbunden mit: ");
-            Serial.println(central.address());
-    
-            // Solange der zentrale Client verbunden ist, bleibe in dieser Schleife
-            while (central.connected()) {
-                float accX, accY, accZ;
-                float gyroX, gyroY, gyroZ;
-    
-                // Beschleunigungssensor auslesen und Werte senden
-                if (IMU.accelerationAvailable()) {
-                    IMU.readAcceleration(accX, accY, accZ);
-                    
-                    // Konvertiere die Werte in Strings und sende sie an die entsprechenden Charakteristiken
-                    accXChar.writeValue(String(accX, 4));  // 4 Dezimalstellen
-                    accYChar.writeValue(String(accY, 4));
-                    accZChar.writeValue(String(accZ, 4));
-                }
-    
-                // Gyroskop auslesen und Werte senden
-                if (IMU.gyroscopeAvailable()) {
-                    IMU.readGyroscope(gyroX, gyroY, gyroZ);
-                    
-                    // Konvertiere die Werte in Strings und sende sie an die entsprechenden Charakteristiken
-                    gyroXChar.writeValue(String(gyroX, 4));  // 4 Dezimalstellen
-                    gyroYChar.writeValue(String(gyroY, 4));
-                    gyroZChar.writeValue(String(gyroZ, 4));
-                }
-    
-                // Sensordatenrate begrenzen (100ms Delay)
-                delay(100);
-            }
-    
-            Serial.println("❌ Verbindung getrennt.");
+
+    // 🔹 Modell initialisieren
+    run_classifier_init();
+
+    // 🔹 BLE starten
+    if (!BLE.begin()) {
+        if (serialActive) Serial.println("❌ BLE konnte nicht gestartet werden!");
+        while (1);
+    }
+
+    BLE.setLocalName("Nano33BLE_AI");
+    BLE.setAdvertisedService(aiService);
+    aiService.addCharacteristic(resultCharacteristic);
+    BLE.addService(aiService);
+    resultCharacteristic.writeValue("Bereit...");
+    BLE.advertise();
+
+    if (serialActive) Serial.println("✅ BLE bereit, warte auf Verbindung...");
+}
+
+void loop() {
+    ei_impulse_result_t result = { 0 };
+    signal_t signal;
+    float features[EI_CLASSIFIER_DSP_INPUT_FRAME_SIZE];
+
+    // Prüfen, ob Serial verbunden ist (für Debugging)
+    bool serialActive = Serial;
+
+    // 🔹 IMU-Daten erfassen & in Buffer speichern
+    for (int i = 0; i < EI_CLASSIFIER_DSP_INPUT_FRAME_SIZE / 6; i++) {
+        while (!IMU.accelerationAvailable() || !IMU.gyroscopeAvailable());
+
+        float ax, ay, az, gx, gy, gz;
+        IMU.readAcceleration(ax, ay, az);
+        IMU.readGyroscope(gx, gy, gz);
+
+        features[i * 6] = ax;
+        features[i * 6 + 1] = ay;
+        features[i * 6 + 2] = az;
+        features[i * 6 + 3] = gx;
+        features[i * 6 + 4] = gy;
+        features[i * 6 + 5] = gz;
+    }
+
+    // 🔹 Signal für Edge Impulse vorbereiten
+    numpy::signal_from_buffer(features, EI_CLASSIFIER_DSP_INPUT_FRAME_SIZE, &signal);
+
+    // 🔹 Modell ausführen
+    EI_IMPULSE_ERROR res = run_classifier(&signal, &result, false);
+    if (res != EI_IMPULSE_OK) {
+        if (serialActive) Serial.println("❌ Fehler beim Klassifizieren!");
+        return;
+    }
+
+    // 🔹 Beste Klasse ermitteln
+    String bestLabel = "";
+    float bestValue = 0.0;
+    for (size_t ix = 0; ix < EI_CLASSIFIER_LABEL_COUNT; ix++) {
+        if (result.classification[ix].value > bestValue) {
+            bestValue = result.classification[ix].value;
+            bestLabel = result.classification[ix].label;
         }
     }
+
+    // 🔹 Ergebnis auf Serial Monitor ausgeben (falls aktiv)
+    if (serialActive) {
+        Serial.print("🏷️  Trick erkannt: ");
+        Serial.print(bestLabel);
+        Serial.print(" (");
+        Serial.print(bestValue * 100, 2);
+        Serial.println("%)");
+    }
+
+    // 🔹 BLE übertragen
+    if (BLE.connected()) {
+        resultCharacteristic.writeValue(bestLabel.c_str());
+    }
+
+    delay(1000); // 1 Inferenz pro Sekunde
+}
